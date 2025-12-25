@@ -8,19 +8,29 @@ import Verify from './page/verify'
 import VerifyOtp from './page/VerifyOtp'
 import Register from './page/Register'
 import Login from './page/Login'
+import { Appdata } from './context/Appcontext';
+import Spinner from './page/Spinner';
  const App = () => {
+  const{isAuth,loading}= Appdata()
   return (
     <>
+   {loading ? (
+  <Spinner />
+) : (
+  <>
     <Routes>
-      <Route path='/' element={<Home/>}/>
-      <Route path='/dashboard' element={<Dashboard/>}/>
-      <Route path='/login' element={< Login/>}/>
-      <Route path='/Register' element={<Register/>}/>
-      <Route path='/verityotp' element={<VerifyOtp/>}/>
-      <Route path='/veritylink' element={<Verify/>}/>
+      <Route path="/" element={ isAuth?<Home />:<Login/>} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/login" element={isAuth?<Home />:<Login/>} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/verityotp" element={isAuth?<Home/>:<VerifyOtp />} />
+      
     </Routes>
+
     <ToastContainer />
-    </>
+  </>
+)}
+</>
   )
 }
 export default App

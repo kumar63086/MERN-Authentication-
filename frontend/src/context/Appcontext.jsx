@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { createContext } from "react";
-import axios from "axios"
 import { useEffect } from "react";
 import { useContext } from "react";
 import api from "../page/apiintersper";
-const URL="http://localhost:3000"
+
 const AppContext=createContext()
 export const AppProvider=({children})=>{
     const [user,setUser]=useState(null)
