@@ -1,54 +1,69 @@
-import { useState } from "react";
-import { createContext } from "react";
-import { useEffect } from "react";
-import { useContext } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import api from "../page/apiintersper";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
-const AppContext=createContext()
-export const AppProvider=({children})=>{
-    const [user,setUser]=useState(null)
-    const [loading,setLoading]=useState(false)
-    const[isAuth,setIsAuth]=useState(false)
-const navigate=useNavigate()
-    async function fetchuser(){
-        setLoading(true)
-        try {
-            const res= await api.get(`/api/v1/auth/me`)
-            setUser(res)
-            setIsAuth(true)
-        } catch (error) {
-         setUser(null);
-         setIsAuth(false);
-         console.error(error?.response?.data?.message || error.message);
-        }finally{
-            setLoading(false)
-        }
-    }
+const AppContext = createContext(null);
 
-    async function Logout(){
-        try {
-         const res = await api.post( `/api/v1/auth/logout`,);  
-          toast.success(res.data.message);
-          setIsAuth(false)
-          setUser(null)
-           navigate('/login')
-        } catch (err) {
-           toast.error(err.response?.data?.message || "Something went wrong");
-        }
+export const AppProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
+
+  /* ================= FETCH CURRENT USER ================= */
+  const fetchUser = async () => {
+    try {
+      const res = await api.get("/api/v1/auth/me");
+      setUser(res.data.user || res.data);
+      setIsAuth(true);
+    } catch (err) {
+        console.error(err);
+      setUser(null);
+      setIsAuth(false);
+    } finally {
+      setLoading(false);
     }
-    useEffect(() => {
-    fetchuser();
+  };
+
+  /* ================= LOGOUT ================= */
+  const Logout = async () => {
+    try {
+      const res = await api.post("/api/v1/auth/logout");
+      toast.success(res.data?.message || "Logged out");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Logout failed");
+    } finally {
+      // Always clear client state
+      setUser(null);
+      setIsAuth(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
   }, []);
 
-    return <AppContext.Provider value={{setIsAuth, isAuth,user,setUser,loading,Logout}}>{children}</AppContext.Provider>
-}
+  return (
+    <AppContext.Provider
+      value={{
+        user,
+        isAuth,
+        loading,
+        setUser,
+        setIsAuth,
+        fetchUser,
+        Logout,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
 
-
-export const Appdata=()=>{
-    const context= useContext(AppContext)
-    if(!context) throw new Error ('AppData must be used within an Appprvider')
-
-        return context
-}
+/* ================= CUSTOM HOOK ================= */
+export const Appdata = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error("Appdata must be used within AppProvider");
+  }
+  return context;
+};

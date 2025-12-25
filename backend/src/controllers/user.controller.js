@@ -9,6 +9,7 @@ import { sendMail } from "../config/mailer.js";
 import { getOtpHtml, getVerifyEmailHtml } from "../config/html.js";
 import crypto from "crypto";
 import { generateAccessToken, generateToken, revokeRefershToken, verifyRefreshToken } from "../config/generateToken.js";
+import { generateCSRFToken } from "../config/csrfMiddleware.js";
 
 // ===============================
 // REGISTER CONTROLLER
@@ -262,9 +263,21 @@ export const logout= asyncHandler(async(req,res)=>{
   await revokeRefershToken(userId)
   res.clearCookie('refreshToken')
   res.clearCookie('accessToken')
+  res.clearCookie('csrfToken')
   await redis.del(`user:${userId}`)
 res.json({
   message:'Logged out succesfully'
 })
+
+})
+
+export const refreshCSRF=asyncHandler(async(req,res)=>{
+  const userId=req.user._id
+  const newCSRFTOKEN= await generateCSRFToken(userId,res)
+  res.json({
+    success: true,
+    message:"CSRF token refresh",
+    csrfToken:newCSRFTOKEN
+  })
 
 })
