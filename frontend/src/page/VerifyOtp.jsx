@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { Appdata } from '../context/Appcontext'
 
 const URL = "http://localhost:3000"
 
 const VerifyOtp = () => {
   const [loading, setLoading] = useState(false)
   const [otp, setOtp] = useState("")
-
   const email = localStorage.getItem("email")
-
+  const navigate=useNavigate()
+  const {setIsAuth,setUser}=Appdata()
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -23,6 +24,10 @@ const VerifyOtp = () => {
       )
 
       toast.success(res.data.message)
+      navigate('/home')
+      setIsAuth(true)
+      setUser(res.data.user)
+      console.log(res.data.user ,"user");
     } catch (err) {
       toast.error(err.response?.data?.message || "Something went wrong")
     } finally {

@@ -3,13 +3,15 @@ import { createContext } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
 import api from "../page/apiintersper";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AppContext=createContext()
 export const AppProvider=({children})=>{
     const [user,setUser]=useState(null)
     const [loading,setLoading]=useState(false)
     const[isAuth,setIsAuth]=useState(false)
-
+const navigate=useNavigate()
     async function fetchuser(){
         setLoading(true)
         try {
@@ -24,11 +26,23 @@ export const AppProvider=({children})=>{
             setLoading(false)
         }
     }
+
+    async function Logout(){
+        try {
+         const res = await api.post( `/api/v1/auth/logout`,);  
+          toast.success(res.data.message);
+          setIsAuth(false)
+          setUser(null)
+           navigate('/login')
+        } catch (err) {
+           toast.error(err.response?.data?.message || "Something went wrong");
+        }
+    }
     useEffect(() => {
     fetchuser();
   }, []);
 
-    return <AppContext.Provider value={{setIsAuth, isAuth,user,setUser,loading}}>{children}</AppContext.Provider>
+    return <AppContext.Provider value={{setIsAuth, isAuth,user,setUser,loading,Logout}}>{children}</AppContext.Provider>
 }
 
 
