@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Spinner from './Spinner';
 const URL="http://localhost:3000"
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -31,9 +32,8 @@ const Login = () => {
         }
 
     }
-    if (loading) {
-        return <p>loading.....!</p>
-    }
+    
+    
 
     const hanlechange=(e)=>{
         const {name,value}=e.target
@@ -41,7 +41,9 @@ const Login = () => {
     }
 
     return (
-        <section className="text-gray-400 bg-gray-900 body-font min-h-screen">
+       <>{
+        loading?(<Spinner/>):(
+             <section className="text-gray-400 bg-gray-900 body-font min-h-screen">
             <div className="container px-5 py-24 mx-auto flex flex-wrap items-center">
 
                 <form onSubmit={handleSubmit} className="lg:w-2/6 md:w-1/2 bg-gray-800 bg-opacity-50 rounded-lg p-8 flex flex-col md:ml-135 w-full mt-10 md:mt-0">
@@ -61,6 +63,9 @@ const Login = () => {
                 </form>
             </div>
         </section>
+        )
+       }
+       </>
     )
 }
 

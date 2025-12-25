@@ -24,6 +24,7 @@ import Spinner from './page/Spinner';
       <Route path="/login" element={isAuth?<Home />:<Login/>} />
       <Route path="/register" element={<Register />} />
       <Route path="/verityotp" element={isAuth?<Home/>:<VerifyOtp />} />
+      <Route path="/token/:token" element={isAuth?<Home/>:<Verify/>} />
       <Route path="/home" element={<Home />} />
     </Routes>
 

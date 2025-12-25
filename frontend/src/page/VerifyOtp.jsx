@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { Appdata } from '../context/Appcontext'
+import Spinner from './Spinner'
 
 const URL = "http://localhost:3000"
 
@@ -35,12 +36,13 @@ const VerifyOtp = () => {
     }
   }
 
-  if (loading) {
-    return <p>Loading....!</p>
-  }
+  
 
   return (
-    <section className="text-gray-400 bg-gray-900 body-font min-h-screen">
+    <>
+    {
+      loading?(<Spinner/>):(
+        <section className="text-gray-400 bg-gray-900 body-font min-h-screen">
       <div className="container px-5 py-24 mx-auto flex flex-wrap items-center">
 
         <form
@@ -80,6 +82,10 @@ const VerifyOtp = () => {
         </form>
       </div>
     </section>
+      )
+    }
+    
+    </>
   )
 }
 
