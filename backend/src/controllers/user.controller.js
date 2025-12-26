@@ -266,7 +266,7 @@ export const logout= asyncHandler(async(req,res)=>{
   res.clearCookie('csrfToken')
   await redis.del(`user:${userId}`)
 res.json({
-  message:'Logged out succesfully'
+  message:'Logout succesfully'
 })
 
 })
@@ -280,4 +280,8 @@ export const refreshCSRF=asyncHandler(async(req,res)=>{
     csrfToken:newCSRFTOKEN
   })
 
+})
+
+export const adminController= asyncHandler(async(req,res)=>{
+res.json({message:"hello admin"})
 })

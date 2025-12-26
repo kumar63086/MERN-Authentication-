@@ -87,5 +87,5 @@ export const generateAccessToken = async (id, res) => {
 
 export const revokeRefershToken=async(userId)=>{
   await redis.del(`refresh_token:${userId}`)
-  await revokeCSRFTOKEN()
+  await revokeCSRFTOKEN(userId)
 }

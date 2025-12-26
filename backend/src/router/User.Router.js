@@ -1,6 +1,6 @@
 import express from "express";
-import { login, logout, myprofile,  refreshCSRF,  RefreshToken,  Register, verifyOtp, verifyUser } from "../controllers/user.controller.js";
-import { isAuth } from "../middleware/isAuth.js";
+import { adminController, login, logout, myprofile,  refreshCSRF,  RefreshToken,  Register, verifyOtp, verifyUser } from "../controllers/user.controller.js";
+import { authorizedAdmin, isAuth } from "../middleware/isAuth.js";
 import { verifyCSRFToken } from "../config/csrfMiddleware.js";
 
 const router = express.Router();
@@ -21,6 +21,8 @@ router.post('/refreshToken',RefreshToken)
 router.post('/logout',isAuth, verifyCSRFToken, logout)
 // post /api/v1/auth/refresh-csrf
 router.post("/refresh-csrf", isAuth, refreshCSRF);
+//GET /api/v1/auth/admin
+router.get("/admin",isAuth,authorizedAdmin,adminController)
 
 
 

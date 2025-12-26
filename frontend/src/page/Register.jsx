@@ -11,6 +11,7 @@ const Register = () => {
 
   })
   const [loading,setLoading]=useState(false)
+  
   const handleSubmit= async(e)=>{
     e.preventDefault();
     setLoading(true)
@@ -18,6 +19,7 @@ const Register = () => {
         const res = await axios.post( `${URL}/api/v1/auth/register`, formData);
         toast.success(res.data.message);  
         console.log(res.data);
+        
     } catch (err) {
       toast.error(err.response?.data?.message || "Something went wrong");
     }

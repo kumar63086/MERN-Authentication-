@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Spinner from "./Spinner";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -12,6 +12,7 @@ const Verify = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const { token } = useParams();
+  const navigate = useNavigate();
 
   const verifyUser = async () => {
     try {
@@ -21,6 +22,11 @@ const Verify = () => {
 
       setSuccessMessage(res.data.message);
       toast.success(res.data.message);
+
+      // ⏳ Auto redirect after success
+      setTimeout(() => {
+        navigate("/login");
+      }, 2500);
     } catch (err) {
       const msg =
         err.response?.data?.message || "Something went wrong";
@@ -40,7 +46,7 @@ const Verify = () => {
   if (loading) return <Spinner />;
 
   return (
-    <div className="w-[300px] m-auto mt-48 text-center">
+    <div className="w-[320px] m-auto mt-48 text-center">
       {successMessage && (
         <p className="text-green-500 text-2xl font-semibold">
           {successMessage}
@@ -50,6 +56,12 @@ const Verify = () => {
       {errorMessage && (
         <p className="text-red-500 text-2xl font-semibold">
           {errorMessage}
+        </p>
+      )}
+
+      {successMessage && (
+        <p className="text-sm mt-3 text-gray-400">
+          Redirecting to login...
         </p>
       )}
     </div>

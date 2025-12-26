@@ -11,7 +11,7 @@ import Login from './page/Login'
 import { Appdata } from './context/Appcontext';
 import Spinner from './page/Spinner';
  const App = () => {
-  const{isAuth,loading}= Appdata()
+  const{isAuth,loading,user}= Appdata()
   return (
     <>
    {loading ? (
@@ -20,7 +20,16 @@ import Spinner from './page/Spinner';
   <>
     <Routes>
       <Route path="/" element={ isAuth?<Home />:<Login/>} />
-      <Route path="/dashboard" element={<Dashboard />} />
+   <Route
+          path="/dashboard"
+          element={
+            user && user?.role === "admin" ? (
+              <Dashboard />
+            ) : (
+              <Login />
+            )
+          }
+        />
       <Route path="/login" element={isAuth?<Home />:<Login/>} />
       <Route path="/register" element={<Register />} />
       <Route path="/verityotp" element={isAuth?<Home/>:<VerifyOtp />} />
