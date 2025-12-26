@@ -7,7 +7,7 @@ import { AppError } from "../utils/AppError.js";
 import { redis } from "../config/redis.js";
 import { sendMail } from "../config/mailer.js";
 import { getOtpHtml, getVerifyEmailHtml } from "../config/html.js";
-import crypto from "crypto";
+import crypto from "crypto" ; 
 import {
   generateAccessToken,
   generateToken,
