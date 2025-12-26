@@ -8,8 +8,8 @@ import './config/redis.js'
 import morgan from "morgan";
 import nocache from "nocache"
 import cookieParser from "cookie-parser";
-const app = express();
 
+const app = express();
 
 app.use(express.json({ limit: "4gb" }));
 app.use(express.urlencoded({ limit: "4gb", extended: true }));

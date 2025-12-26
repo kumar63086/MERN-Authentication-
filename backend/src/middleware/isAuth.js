@@ -2,6 +2,7 @@ import { redis } from "../config/redis.js";
 import jwt from "jsonwebtoken";
 import { AppError } from "../utils/AppError.js";
 import { User } from "../model/user.js";
+import { isSessionActive } from "../config/generateToken.js";
 export const isAuth = async (req, res, next) => {
   try {
     const token = req.cookies.accessToken;
@@ -16,12 +17,24 @@ export const isAuth = async (req, res, next) => {
     if (!decoded) {
       return next(new AppError("Token is invalid or expired", 401));
     }
-
+   const sessionActive= await isSessionActive(
+    decoded.id,
+    decoded.sessionId
+   )
+   if(!sessionActive){
+      res.clearCookie('refreshToken')
+      res.clearCookie('accessToken')
+      res.clearCookie('csrfToken')
+      return  res.status(401).json({
+        message:"Session Expired . you have been logged in from another device"
+      })
+   }
     // Check Redis cache first
     const cacheUser = await redis.get(`user:${decoded.id}`);
 
     if (cacheUser) {
       req.user = JSON.parse(cacheUser);
+      req.sessionId=decoded.sessionId
       return next();
     }
 
@@ -35,6 +48,7 @@ export const isAuth = async (req, res, next) => {
     await redis.setEx(`user:${user._id}`, 3600, JSON.stringify(user));
 
     req.user = user;
+     req.sessionId=decoded.sessionId
     next();
   } catch (err) {
     console.error("Auth Error:", err.message);
